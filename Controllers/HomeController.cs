@@ -6,21 +6,31 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BlogApplication.Models;
+using BlogApplication.Data;
+using BlogApplication.Models.Posts;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlogApplication.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        // Setting the application database context class to the db variable.
+        private readonly ApplicationDbContext db;
 
-        public HomeController(ILogger<HomeController> logger)
+        // Using the constructor to then assign a new instance of the context to the db variable.
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            db = context;
         }
+       
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            List<Post> postList = await db.Posts
+                .OrderByDescending(p => p.PostedOn)
+                .ToListAsync();
+
+            return View(postList);
         }
 
         public IActionResult Privacy()

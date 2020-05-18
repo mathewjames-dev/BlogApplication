@@ -1,8 +1,54 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using BlogApplication.Models.Posts;
+
+@model IList<BlogApplication.Models.Posts.Post>
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+@section Styles {
+    <link rel="stylesheet" href="~/css/home.css" />
+}
+
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to my Blog Application.</h1>
+    <p>This was used as a learning base for ASP.net after specialising in PHP for a long period of time. I hope you can learn a thing or two from this or even use it as a blog base!</p>
 </div>
+
+<section>
+    <div class="py-5 text-center">
+        <header class="section-header">
+            <h2>Blog Posts</h2>
+        </header>
+
+        <div class="container">
+            <div class="row">
+                @foreach (Post post in @Model)
+                {
+                    <div class="col-md-4">
+                        <div class="card mb-4 shadow-sm">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
+                            <div class="card-body">
+                                <p class="card-text">@post.ShortDescription</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        @Html.ActionLink("View", "Details", "Blog", new { id = post.Id })
+                                        @if (SignInManager.IsSignedIn(User))
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                        }
+                                    </div>
+                                    <small class="text-muted">9 mins</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
