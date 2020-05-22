@@ -65,6 +65,12 @@ namespace BlogApplication.Models.Posts
             set;
         }
 
+        public string Content
+        {
+            get;
+            set;
+        }
+
         /*
          * This is linking the Post to the Category model, alternatively known as relationships
          */

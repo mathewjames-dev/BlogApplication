@@ -66,6 +66,11 @@ namespace BlogApplication
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "blogDetails",
+                    pattern: "blog/{slug}",
+                    defaults: new { controller = "Blog", action = "Details" }
+                    );
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();

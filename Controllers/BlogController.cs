@@ -25,21 +25,29 @@ namespace BlogApplication.Controllers
             return View(await db.Categories.ToListAsync());
         }
 
-        // GET: Blog/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Blog/{slug}
+        public async Task<IActionResult> Details(string slug)
         {
-            if (id == null)
+            if (slug == null)
             {
                 return NotFound();
             }
 
             var post = await db.Posts
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.UrlSlug == slug);
 
             if (post == null)
             {
                 return NotFound();
             }
+
+            DateTime Modified = new DateTime();      
+            Modified = Convert.ToDateTime(post.Modified);
+            ViewData["modified_date"] = Modified.ToLongDateString();
+
+            var relatedPosts = await db.Posts.Where(m => m.Id != post.Id)
+                .ToListAsync();
+            ViewData["related_posts"] = relatedPosts;
 
             return View(post);
         }
