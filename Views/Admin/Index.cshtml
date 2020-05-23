@@ -1,0 +1,39 @@
+﻿<!-- Making sure we are using the identity framework on the view file -->
+@using Microsoft.AspNetCore.Identity
+
+<!-- Setting the model to a user populated list-->
+@model IList<IdentityUser>
+
+<!-- Setting the view file settings -->
+@{
+    ViewData["Title"] = "Admin Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Main container -->
+<div class="text-center container">
+    <h1>Admin Home</h1>
+
+    <p>All Registered Users</p>
+    <table>
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Users Email</th>
+                <th>Users Email Confirmed</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <!-- Looping through the model and setting it to user which is an instance of IdentityUser.-->
+            @foreach (IdentityUser user in @Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>@user.EmailConfirmed</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

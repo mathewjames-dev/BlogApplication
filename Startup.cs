@@ -63,6 +63,8 @@ namespace BlogApplication
             app.UseAuthentication();
             app.UseAuthorization();
 
+
+            // These are the routes mapped to controllers and functions.
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
