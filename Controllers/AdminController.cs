@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApplication.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlogApplication.Controllers
 {
+    [Authorize(Policy = "RequireAdminRights")]
     public class AdminController : Controller
     {
         // Setting the application database context class to the db variable.

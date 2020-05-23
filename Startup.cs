@@ -33,9 +33,20 @@ namespace BlogApplication
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
+
             services.AddRazorPages();
+
+            // We want to add in authorization service to our project.
+            services.AddAuthorization(options =>
+            {
+                // We're creating a policy which is RequireAdminRights.
+                options.AddPolicy("RequireAdminRights",
+                     policy => policy.RequireRole("Administrator"));
+            });
 
             // This is used to lowercase the routing away from the default camel case that is implemented.
             services.AddRouting(options => options.LowercaseUrls = true);
@@ -62,7 +73,6 @@ namespace BlogApplication
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             // These are the routes mapped to controllers and functions.
             app.UseEndpoints(endpoints =>
