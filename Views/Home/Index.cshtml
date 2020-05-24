@@ -1,27 +1,30 @@
-﻿<!-- We need to set using to identity and the posts model into the view file. -->
-@using Microsoft.AspNetCore.Identity
-@using BlogApplication.Models.Posts;
+﻿<!--
 
-<!-- Then we need set the post model as a list and into the model tag -->
-@model IList<BlogApplication.Models.Posts.Post>
-
-<!-- Afterwards we want to inject the appropriate managers which will be able to access the user data. -->
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
-
-<!-- We can set the layout and view data here -->
+-->
+@using BlogApplication.Models.Posts
+<!--
+    We want to set the model the our index view model which will be used to get the data.
+-->
+@model BlogApplication.Models.IndexViewModel
+<!--
+    We can set the layout and view data here
+-->
 @{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<!-- Main headline introduction container -->
+<!--
+    Main headline introduction container
+-->
 <div class="container text-center">
     <h1 class="display-4">Welcome to my Blog Application.</h1>
     <p>This was used as a learning base for ASP.net after specialising in PHP for a long period of time. I hope you can learn a thing or two from this or even use it as a blog base!</p>
 </div>
 
-<!-- Blog Posts container -->
+<!--
+    Blog Posts container
+-->
 <div class="py-5 text-center">
     <header class="section-header">
         <h2>Blog Posts</h2>
@@ -29,23 +32,34 @@
 
     <div class="container">
         <div class="row">
-            <!-- We loop through the model tag casting the appropriate model -->
-            @foreach (Post post in @Model)
+            <!--
+                We loop through the posts which is inside our model
+            -->
+            @foreach (Post post in @Model.Posts)
             {
                 <div class="col-md-4">
                     <div class="card mb-4 shadow-sm">
-                        <!-- Thumbnail Image For Blogs -->
+                        <!--
+                            Thumbnail Image For Blogs
+                        -->
                         <svg class="bd-placeholder-img card-img-top" width="100%" height="225" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: Thumbnail"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"></rect><text x="50%" y="50%" fill="#eceeef" dy=".3em">Thumbnail</text></svg>
                         <div class="card-body">
-                            <!-- The short description for the blog -->
+                            <!-- 
+                                The short description for the blog
+                            -->
                             <p class="card-text">@post.ShortDescription</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <div class="btn-group">
-                                    <!-- We set the view more button to the customer blog details route -->
+                                    <!--
+                                        We set the view more button to the customer blog details route
+                                    -->
                                     <a href="/blog/@post.UrlSlug" class="btn btn-light">View More</a>
 
-                                    <!-- We also use the sign in manager that we injected to check if the user is signed in to edit.-->
-                                    @if (SignInManager.IsSignedIn(User))
+                                    <!--
+                                        We also use the sign in manager that we injected to check
+                                        if the user is signed in to edit.
+                                    -->
+                                    @if (@Model.IsSignedIn)
                                     {
                                         <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                     }

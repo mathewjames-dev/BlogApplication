@@ -13,24 +13,35 @@ using Microsoft.EntityFrameworkCore;
 namespace BlogApplication.Controllers
 {
     public class HomeController : Controller
-    {
-        // Setting the application database context class to the db variable.
-        private readonly ApplicationDbContext db;
+    { 
+        /*
+         * Setting the database context to the DB variable.
+         */
+        private readonly ApplicationDbContext _DB;
 
-        // Using the constructor to then assign a new instance of the context to the db variable.
+        /*
+         * Using the constructor to then assign that variable an instance of the database context.
+         */
         public HomeController(ApplicationDbContext context)
         {
-            db = context;
+            _DB = context;
         }
        
-
         public async Task<IActionResult> Index()
         {
-            List<Post> postList = await db.Posts
+            /*
+             * Setting up a new instance of the index view model,
+             * setting the posts value to the query result.
+             */
+            IndexViewModel viewModel = new IndexViewModel()
+            {
+                Posts = await _DB.Posts
                 .OrderByDescending(p => p.PostedOn)
-                .ToListAsync();
+                .ToListAsync(),
+                IsSignedIn = User.Identity.IsAuthenticated
+            };
 
-            return View(postList);
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

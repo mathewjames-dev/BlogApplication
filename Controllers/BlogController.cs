@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BlogApplication.Data;
 using BlogApplication.Models.Posts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogApplication.Controllers
 {
@@ -52,12 +53,14 @@ namespace BlogApplication.Controllers
             return View(post);
         }
 
+        [Authorize(Policy = "RequireAdminRights")]
         // GET: Blog/Create
         public IActionResult Create()
         {
             return View();
         }
 
+        [Authorize(Policy = "RequireAdminRights")]
         // POST: Blog/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -74,6 +77,7 @@ namespace BlogApplication.Controllers
             return View(category);
         }
 
+        [Authorize(Policy = "RequireAdminRights")]
         // GET: Blog/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -93,6 +97,7 @@ namespace BlogApplication.Controllers
         // POST: Blog/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Policy = "RequireAdminRights")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UrlSlug,Description")] Category category)
@@ -126,6 +131,7 @@ namespace BlogApplication.Controllers
         }
 
         // GET: Blog/Delete/5
+        [Authorize(Policy = "RequireAdminRights")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -146,6 +152,7 @@ namespace BlogApplication.Controllers
         // POST: Blog/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "RequireAdminRights")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await db.Categories.FindAsync(id);

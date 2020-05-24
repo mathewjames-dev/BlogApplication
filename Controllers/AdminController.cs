@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BlogApplication.Data;
+using BlogApplication.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,24 +11,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlogApplication.Controllers
 {
+    /*
+     * Set the entire controller to utilise our require admin rights policy.
+     */
     [Authorize(Policy = "RequireAdminRights")]
     public class AdminController : Controller
     {
-        // Setting the application database context class to the db variable.
-        private readonly ApplicationDbContext db;
+        /*
+         * Set the database context to the variable.
+         */
+        private readonly ApplicationDbContext _DB;
 
-        // Using the constructor to then assign a new instance of the context to the db variable.
+        /*
+         * Using the constructor to create a new database context
+         */
         public AdminController(ApplicationDbContext context)
         {
-            db = context;
+            _DB = context;
         }
 
         // GET: /admin
         public async Task<IActionResult> Index()
         {
-            // Using the database context we setup to get the users all saved to a list.
-            List<IdentityUser> usersList = await db.Users.ToListAsync();
-            return View(usersList);
+            /*
+             * Setting up a new admin index view model
+             */
+            AdminIndexViewModel viewModel = new AdminIndexViewModel()
+            {
+                Users = await _DB.Users.ToListAsync()
+            };
+
+            return View(viewModel);
         }
     }
 }

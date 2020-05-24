@@ -24,10 +24,11 @@ namespace BlogApplication
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // This is setting up the database context and assigning it to a connection string.
+            /*
+             * Setting up the database context and assigning it to a connection string
+             */
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -40,19 +41,25 @@ namespace BlogApplication
 
             services.AddRazorPages();
 
-            // We want to add in authorization service to our project.
+            /*
+             * Adding in authorization to the project
+             */
             services.AddAuthorization(options =>
             {
-                // We're creating a policy which is RequireAdminRights.
+                /*
+                 * Creating a new policy which is RequireAdminRights.
+                 * Will require user to be in the administrator role
+                 */
                 options.AddPolicy("RequireAdminRights",
                      policy => policy.RequireRole("Administrator"));
             });
 
-            // This is used to lowercase the routing away from the default camel case that is implemented.
+            /*
+             * This is used to lowercase the routing away from the default.
+             */
             services.AddRouting(options => options.LowercaseUrls = true);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -63,7 +70,6 @@ namespace BlogApplication
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -74,14 +80,23 @@ namespace BlogApplication
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // These are the routes mapped to controllers and functions.
+            /*
+             * Routes mapped to controllers and functions
+             */
             app.UseEndpoints(endpoints =>
             {
+                /*
+                 * Mapping the blog details route.
+                 */
                 endpoints.MapControllerRoute(
                     name: "blogDetails",
                     pattern: "blog/{slug}",
                     defaults: new { controller = "Blog", action = "Details" }
                     );
+
+                /*
+                 * Default Controller Routing
+                 */
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
