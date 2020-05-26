@@ -31,7 +31,7 @@ namespace BlogApplication.Controllers
         {
             /*
              * Setting up a new instance of the index view model,
-             * setting the posts value to the query result.
+             * setting the posts value to the query result, h3as well as setting the is signed in value.
              */
             IndexViewModel viewModel = new IndexViewModel()
             {
