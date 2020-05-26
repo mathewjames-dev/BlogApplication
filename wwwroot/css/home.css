@@ -1,4 +1,8 @@
-﻿@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
+﻿/*
+    Blog Styling
+    Credits to: https://codepen.io/JavaScriptJunkie/pen/WgRBxw
+*/
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
 
 .blog-slider {
     width: 95%;

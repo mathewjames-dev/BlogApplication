@@ -1,42 +1,59 @@
-﻿@model BlogApplication.Models.Posts.Category
+﻿@model BlogApplication.Models.BlogCreateViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Blog";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<h1>Create Blog</h1>
 
-<h4>Category</h4>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UrlSlug" class="control-label"></label>
-                <input asp-for="UrlSlug" class="form-control" />
-                <span asp-validation-for="UrlSlug" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            @using (Html.BeginForm("Create", "Blog", FormMethod.Post))
+            {
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Title)
+                    @Html.TextBoxFor(m => m.Post.Title, new { @class = "form-control" })
+                </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.ShortDescription)
+                    @Html.TextBoxFor(m => m.Post.ShortDescription, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Description)
+                    @Html.TextBoxFor(m => m.Post.Description, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Meta)
+                    @Html.TextBoxFor(m => m.Post.Meta, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.UrlSlug)
+                    @Html.TextBoxFor(m => m.Post.UrlSlug, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Content)
+                    @Html.TextAreaFor(m => m.Post.Content, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Category)
+                    @Html.DropDownList("CategoryId", Model.Categories, "Select a category", new { @class = "form-control" })
+                </div>
+
+                <div class="row" style="margin-top: 15px;">
+                    <input class="btn btn-success" type="submit" value="Create Blog" />
+                </div>
+            }
+        </div>
+    </div>
 </div>
 
 @section Scripts {
