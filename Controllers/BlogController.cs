@@ -114,8 +114,6 @@ namespace BlogApplication.Controllers
         }
 
         // POST: Blog/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UrlSlug,Description")] Category category)
@@ -151,19 +149,25 @@ namespace BlogApplication.Controllers
         // GET: Blog/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            // Check to make sure a blog id has been passed.
             if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _DB.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            // Then we need to setup the delete view model.
+            BlogDeleteViewModel viewModel = new BlogDeleteViewModel()
+            {
+                Post = await _DB.Posts.FirstOrDefaultAsync(m => m.Id == id)
+            };
+            
+            // Double check that it retrieved a blog and if not we want to error.
+            if (viewModel.Post == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(viewModel);
         }
 
         // POST: Blog/Delete/5
@@ -171,8 +175,11 @@ namespace BlogApplication.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _DB.Categories.FindAsync(id);
-            _DB.Categories.Remove(category);
+            // Get the post from the database by id.
+            var post = await _DB.Posts.FindAsync(id);
+
+            // Then we can remove that record from the posts table within the database.
+            _DB.Posts.Remove(post);
             await _DB.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

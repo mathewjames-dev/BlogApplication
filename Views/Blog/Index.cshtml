@@ -1,15 +1,22 @@
-﻿@model BlogApplication.Models.BlogIndexViewModel
+﻿<!-- Setting up the model -->
+@model BlogApplication.Models.BlogIndexViewModel
 
+<!-- Setting the relevant page data -->
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "All Blogs";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Importing the datatable css -->
+@section Styles{
+    <link rel="stylesheet" href="~/lib/datatables/datatable.css" />
 }
 
 <h1>Blog Index</h1>
 
 <div class="container">
     <div class="row">
-        <table>
+        <table class="all-blogs-table">
             <thead>
                 <tr>
                     <th>Title</th>
@@ -19,12 +26,19 @@
                     <th>Url Slug</th>
                     <th>Posted On</th>
                     <th>Published</th>
-                    <th>Edit Blog</th>
-                    <th>View Blog</th>
+                    <th>Category</th>
+                    <th>Tags</th>   
+                    <th>Edit</th>
+                    <th>Delete</th>
+                    <th>View</th>
                 </tr>
             </thead>
 
             <tbody>
+                <!-- 
+                    We're looping through the posts that are part of the model
+                    We're casting them to the Post model as well.
+                    -->
                 @foreach (BlogApplication.Models.Posts.Post post in Model.Posts)
                 {
                 <tr>
@@ -33,9 +47,17 @@
                     <td>@post.Description</td>
                     <td>@post.Meta</td>
                     <td>@post.UrlSlug</td>
-                    <td>@post.PostedOn</td>
+                    <td>@post.PostedOn.ToShortDateString()</td>
                     <td>@post.Published</td>
+
+                    <!-- If a category has been set then we display the name -->
+                    <th>@(post.Category is null ? "Not Set" : post.Category.Name)</th>
+
+                    <!-- If the tags have been set then we concat them to a string. -->
+                    <th>@(post.PostTags is null ? "Not Set" : String.Join("#", @post.PostTags))</th>
+
                     <td><a href="/blog/edit/@post.Id">Edit Blog</a></td>
+                    <td><a href="/blog/delete/@post.Id">Delete Blog</a></td>
                     <td><a href="/blog/@post.UrlSlug">View Blog</a></td>
                 </tr>
                 }
@@ -43,3 +65,13 @@
         </table>
     </div>
 </div>
+
+<!-- Importing the datatable javascript, as well as setting our table to be a data table. -->
+@section Scripts{
+    <script src="~/lib/datatables/datatable.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.all-blogs-table').DataTable();
+        });
+    </script>
+}

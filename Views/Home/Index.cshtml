@@ -1,14 +1,8 @@
-﻿<!--
-    We want to use the posts model so we need to include it.
--->
+﻿<!-- We want to use the posts model so we need to include it.-->
 @using BlogApplication.Models.Posts
-<!--
-    We want to set the model the our index view model which will be used to get the data.
--->
+<!-- We want to set the model the our index view model which will be used to get the data. -->
 @model BlogApplication.Models.IndexViewModel
-<!--
-    We can set the layout and view data here
--->
+<!-- We can set the layout and view data here -->
 @{
     ViewData["Title"] = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,17 +12,13 @@
     <link rel="stylesheet" href="~/css/home.css" />
 }
 
-<!--
-    Main headline introduction container
--->
+<!-- Main headline introduction container -->
 <div class="container text-center">
     <h1 class="display-4">Welcome to my Blog Application.</h1>
     <p>This was used as a learning base for ASP.net after specialising in PHP for a long period of time. I hope you can learn a thing or two from this or even use it as a blog base!</p>
 </div>
 
-<!--
-    Blog Posts container
--->
+<!-- Blog Posts container -->
 <div class="py-5 text-center">
     <header class="section-header">
         <h2>Blog Posts</h2>
