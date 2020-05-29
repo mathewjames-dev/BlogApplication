@@ -41,28 +41,51 @@ namespace BlogApplication.Controllers
         // GET: Blog/{slug}
         public async Task<IActionResult> Details(string slug)
         {
+            /*
+             * We check if the slug is null
+             * If it is then we return not found
+             */
             if (slug == null)
             {
                 return NotFound();
             }
 
-            var post = await _DB.Posts
-                .FirstOrDefaultAsync(m => m.UrlSlug == slug);
+            /*
+             * Setup the blog details view model and assign appropriate values
+             */
+            BlogDetailsViewModel viewModel = new BlogDetailsViewModel()
+            {
+                /*
+                 * Get the post from the database based on the slug
+                 */
+                Post = await _DB.Posts
+                .FirstOrDefaultAsync(m => m.UrlSlug == slug)
+            };
 
-            if (post == null)
+            /*
+             * Double check the post that we get from the database hasn't returned null
+             * Otherwise return not found
+             */
+            if (viewModel.Post == null)
             {
                 return NotFound();
             }
 
-            DateTime Modified = new DateTime();
-            Modified = Convert.ToDateTime(post.Modified);
-            ViewData["modified_date"] = Modified.ToLongDateString();
+            /*
+             * We can convert the post modified to a long date string using a custom reusable function.
+             * We can then save that to the view model for easier access.
+             */
+            viewModel.ModifiedDate = ConvertDateToLongDateString(Convert.ToDateTime(viewModel.Post.Modified));
 
-            var relatedPosts = await _DB.Posts.Where(m => m.Id != post.Id)
+            /*
+             * We can also use the view model to save related posts and better access the data.
+             * We do this below by getting all posts that do not have the same id as the main post from the database
+             * Then we save this to the view model.
+             */
+            viewModel.RelatedPosts = await _DB.Posts.Where(m => m.Id != viewModel.Post.Id)
                 .ToListAsync();
-            ViewData["related_posts"] = relatedPosts;
 
-            return View(post);
+            return View(viewModel);
         }
 
         // GET: Blog/Create
@@ -171,11 +194,11 @@ namespace BlogApplication.Controllers
              */
             _DB.Posts.Update(viewModel.Post);
 
-                /*
-                 * Then we save the changes to the database
-                 */
-                await _DB.SaveChangesAsync();
-            
+            /*
+             * Then we save the changes to the database
+             */
+            await _DB.SaveChangesAsync();
+
 
             /*
              * Return to the index function
@@ -247,6 +270,11 @@ namespace BlogApplication.Controllers
              * Then redirect the user back to the Index function
              */
             return RedirectToAction(nameof(Index));
+        }
+
+        public string ConvertDateToLongDateString(DateTime date)
+        {
+            return date.ToLongDateString();
         }
     }
 }
