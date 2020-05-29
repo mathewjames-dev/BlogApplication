@@ -10,6 +10,7 @@ using BlogApplication.Models.Posts;
 using Microsoft.AspNetCore.Authorization;
 using BlogApplication.Models;
 using System.Diagnostics;
+using ObjectDumper;
 
 namespace BlogApplication.Controllers
 {
@@ -53,7 +54,7 @@ namespace BlogApplication.Controllers
                 return NotFound();
             }
 
-            DateTime Modified = new DateTime();      
+            DateTime Modified = new DateTime();
             Modified = Convert.ToDateTime(post.Modified);
             ViewData["modified_date"] = Modified.ToLongDateString();
 
@@ -112,50 +113,74 @@ namespace BlogApplication.Controllers
         // GET: Blog/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            /*
+             * We double check an id has been passed
+             * Otherwise we return not found.
+             */
             if (id == null)
             {
                 return NotFound();
             }
 
-            var category = await _DB.Categories.FindAsync(id);
-            if (category == null)
+            /*
+             * We setup the blog edit view model.
+             * Then we get the post from the database by id
+             */
+            BlogEditViewModel viewModel = new BlogEditViewModel()
+            {
+                Post = await _DB.Posts.FindAsync(id),
+                /*
+                 * Set up the categories from the database to a select list item.
+                 */
+                Categories = (IEnumerable<SelectListItem>)_DB.Categories.Select(m => new SelectListItem
+                {
+                    Value = m.Id.ToString(),
+                    Text = m.Name,
+                    Selected = m.Id == 1
+                })
+            };
+
+            /*
+             * If the post is null then we again return not found.
+             */
+            if (viewModel.Post == null)
             {
                 return NotFound();
             }
-            return View(category);
+
+            return View(viewModel);
         }
 
         // POST: Blog/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,UrlSlug,Description")] Category category)
+        public async Task<IActionResult> Edit(int id, BlogEditViewModel viewModel)
         {
-            if (id != category.Id)
+            /*
+             * We make sure that the id passed in the url is the same as the post id in the view.
+             */
+            if (id != viewModel.Post.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _DB.Update(category);
-                    await _DB.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CategoryExists(category.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
+            System.Diagnostics.Debug.WriteLine(viewModel.Post.Title);
+
+            /*
+             * Update the post record on the database
+             */
+            _DB.Posts.Update(viewModel.Post);
+
+                /*
+                 * Then we save the changes to the database
+                 */
+                await _DB.SaveChangesAsync();
+            
+
+            /*
+             * Return to the index function
+             */
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Blog/Delete/5
@@ -177,7 +202,7 @@ namespace BlogApplication.Controllers
             {
                 Post = await _DB.Posts.FirstOrDefaultAsync(m => m.Id == id)
             };
-            
+
             /*
              * Double check the post query didn't return null
              * If it does we want to return not found.
@@ -199,28 +224,29 @@ namespace BlogApplication.Controllers
              * We want to retrieve the post from the database.
              * We will utilise the blogs id within the view model.
              */
-            var post = await _DB.Posts.FindAsync(viewModel.Post.Id);
 
-            /*
-             * Once we retrieve the post we can then proceed to remove that record,
-             * from the post table within the database.
-             */
-            _DB.Posts.Remove(post);
+            try
+            {
+                /*
+                 * Instead of retrieving the record from the database,
+                 * We can directly remove it from the database.
+                 */
+                _DB.Posts.Remove(viewModel.Post);
 
-            /*
-             * We then save the changes to the database
-             */
-            await _DB.SaveChangesAsync();
+                /*
+                 * We then save the changes to the database
+                 */
+                await _DB.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
 
             /*
              * Then redirect the user back to the Index function
              */
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return _DB.Categories.Any(e => e.Id == id);
         }
     }
 }
