@@ -47,7 +47,7 @@ namespace BlogApplication.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CategoryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
@@ -56,7 +56,10 @@ namespace BlogApplication.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Meta")
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MetaTitle")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Modified")
@@ -324,7 +327,9 @@ namespace BlogApplication.Migrations
                 {
                     b.HasOne("BlogApplication.Models.Posts.Category", "Category")
                         .WithMany("CategoryPosts")
-                        .HasForeignKey("CategoryId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BlogApplication.Models.Posts.PostTag", b =>
