@@ -9,8 +9,6 @@ using BlogApplication.Data;
 using BlogApplication.Models.Posts;
 using Microsoft.AspNetCore.Authorization;
 using BlogApplication.Models;
-using System.Diagnostics;
-using ObjectDumper;
 
 namespace BlogApplication.Controllers
 {
@@ -186,8 +184,6 @@ namespace BlogApplication.Controllers
             {
                 return NotFound();
             }
-
-            System.Diagnostics.Debug.WriteLine(viewModel.Post.Title);
 
             /*
              * Update the post record on the database

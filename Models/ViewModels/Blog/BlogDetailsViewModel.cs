@@ -11,5 +11,7 @@ namespace BlogApplication.Models
         public Post Post { get; set; }
 
         public string ModifiedDate { get; set; }
+
+        public IList<Post> RelatedPosts { get; set; }
     }
 }
