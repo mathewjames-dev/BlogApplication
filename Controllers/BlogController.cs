@@ -9,6 +9,7 @@ using BlogApplication.Data;
 using BlogApplication.Models.Posts;
 using Microsoft.AspNetCore.Authorization;
 using BlogApplication.Models;
+using System.Diagnostics;
 
 namespace BlogApplication.Controllers
 {
@@ -72,6 +73,9 @@ namespace BlogApplication.Controllers
             BlogCreateViewModel viewModel = new BlogCreateViewModel()
             {
                 Post = new Post(),
+                /*
+                 * Set up the categories from the database to a select list item.
+                 */
                 Categories = (IEnumerable<SelectListItem>)_DB.Categories.Select(m => new SelectListItem
                 {
                     Value = m.Id.ToString(),
@@ -86,13 +90,10 @@ namespace BlogApplication.Controllers
         // POST: Blog/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ShortDescription,Description,Meta,UrlSlug,Content,CategoryId")] Post post)
+        public IActionResult Create(BlogCreateViewModel viewModel)
         {
-            if (ModelState.IsValid)
-            {
-                _DB.Add(post);
-                await _DB.SaveChangesAsync();
-            }
+            System.Diagnostics.Debug.WriteLine(viewModel.Post.Title);
+            System.Diagnostics.Debug.WriteLine(viewModel.Post.CategoryId);
 
             return Redirect("/admin");
         }
@@ -149,19 +150,27 @@ namespace BlogApplication.Controllers
         // GET: Blog/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            // Check to make sure a blog id has been passed.
+            /*
+             * We check to make sure an id has been passed.
+             * Else we want to return the not found.
+             */
             if (id == null)
             {
                 return NotFound();
             }
 
-            // Then we need to setup the delete view model.
+            /*
+             * Then we setup the blog delete view model.
+             */
             BlogDeleteViewModel viewModel = new BlogDeleteViewModel()
             {
                 Post = await _DB.Posts.FirstOrDefaultAsync(m => m.Id == id)
             };
             
-            // Double check that it retrieved a blog and if not we want to error.
+            /*
+             * Double check the post query didn't return null
+             * If it does we want to return not found.
+             */
             if (viewModel.Post == null)
             {
                 return NotFound();
@@ -173,14 +182,28 @@ namespace BlogApplication.Controllers
         // POST: Blog/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(BlogDeleteViewModel viewModel)
         {
-            // Get the post from the database by id.
-            var post = await _DB.Posts.FindAsync(id);
+            /*
+             * We want to retrieve the post from the database.
+             * We will utilise the blogs id within the view model.
+             */
+            var post = await _DB.Posts.FindAsync(viewModel.Post.Id);
 
-            // Then we can remove that record from the posts table within the database.
+            /*
+             * Once we retrieve the post we can then proceed to remove that record,
+             * from the post table within the database.
+             */
             _DB.Posts.Remove(post);
+
+            /*
+             * We then save the changes to the database
+             */
             await _DB.SaveChangesAsync();
+
+            /*
+             * Then redirect the user back to the Index function
+             */
             return RedirectToAction(nameof(Index));
         }
 
