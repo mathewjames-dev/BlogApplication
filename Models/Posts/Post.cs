@@ -35,7 +35,13 @@ namespace BlogApplication.Models.Posts
             set;
         }
 
-        public string Meta
+        public string MetaTitle
+        {
+            get;
+            set;
+        }
+
+        public string MetaDescription
         {
             get;
             set;
@@ -73,7 +79,13 @@ namespace BlogApplication.Models.Posts
 
         /*
          * This is linking the Post to the Category model, alternatively known as relationships
+         * But we still want to setup a setter and getter for the category id on the post table.
          */
+        public int CategoryId
+        {
+            get;
+            set;
+        }
         public Category Category
         {
             get;
