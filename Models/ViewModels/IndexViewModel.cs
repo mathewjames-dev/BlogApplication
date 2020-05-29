@@ -1,6 +1,4 @@
 using BlogApplication.Models.Posts;
-using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 
 namespace BlogApplication.Models

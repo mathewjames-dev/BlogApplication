@@ -90,12 +90,23 @@ namespace BlogApplication.Controllers
         // POST: Blog/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(BlogCreateViewModel viewModel)
+        public async Task<IActionResult> Create(BlogCreateViewModel viewModel)
         {
-            System.Diagnostics.Debug.WriteLine(viewModel.Post.Title);
-            System.Diagnostics.Debug.WriteLine(viewModel.Post.CategoryId);
+            /*
+             * Add the post data from the view model into the posts table as a new record
+             */
+            _DB.Posts.Add(viewModel.Post);
 
-            return Redirect("/admin");
+            /*
+             * Update the database changes
+             */
+            await _DB.SaveChangesAsync();
+
+
+            /*
+             * Then redirect the user back to the Index function
+             */
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Blog/Edit/5

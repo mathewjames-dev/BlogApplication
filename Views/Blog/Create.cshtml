@@ -1,16 +1,20 @@
-﻿@model BlogApplication.Models.BlogCreateViewModel
+﻿<!-- Setup the page model -->
+@model BlogApplication.Models.BlogCreateViewModel
 
+<!-- Set the page data up -->
 @{
     ViewData["Title"] = "Create Blog";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Create Blog</h1>
-
 <hr />
+
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-6">
+            <!-- We are using the html helpers to setup the form.
+                Also utilising our page model to get the relevant attributes. -->
             @using (Html.BeginForm("Create", "Blog", FormMethod.Post))
             {
                 <div class="row">
@@ -29,8 +33,13 @@
                 </div>
 
                 <div class="row">
-                    @Html.LabelFor(m => m.Post.Meta)
-                    @Html.TextBoxFor(m => m.Post.Meta, new { @class = "form-control" })
+                    @Html.LabelFor(m => m.Post.MetaTitle)
+                    @Html.TextBoxFor(m => m.Post.MetaTitle, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.MetaDescription)
+                    @Html.TextBoxFor(m => m.Post.MetaDescription, new { @class = "form-control" })
                 </div>
 
                 <div class="row">
@@ -44,8 +53,18 @@
                 </div>
 
                 <div class="row">
-                    @Html.LabelFor(m => m.Post.Category)
-                    @Html.DropDownList("CategoryId", Model.Categories, "Select a category", new { @class = "form-control" })
+                    @Html.LabelFor(m => m.Post.CategoryId)
+                    @Html.DropDownListFor(m => m.Post.CategoryId, Model.Categories, "Select a category", new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.PostTags)
+                    @Html.TextBoxFor(m => m.Post.PostTags, new { @class = "form-control" })
+                </div>
+
+                <div class="row">
+                    @Html.LabelFor(m => m.Post.Published)
+                    @Html.CheckBoxFor(m => m.Post.Published, new { @class = "form-control" })
                 </div>
 
                 <div class="row" style="margin-top: 15px;">
