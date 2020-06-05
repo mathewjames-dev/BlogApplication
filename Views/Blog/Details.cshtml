@@ -1,32 +1,39 @@
-﻿@using BlogApplication.Models.Posts
-@model BlogApplication.Models.Posts.Post
+﻿<!-- Setup the page model -->
+@model BlogApplication.Models.BlogDetailsViewModel
 
+<!-- Set the page data up -->
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Blog Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @{
-    var relatedPosts = (List<Post>)ViewData["related_posts"]; // Cast the list
+   // var relatedPosts = (List<Post>)ViewData["related_posts"]; // Cast the list
 }
 
-
+<!-- Styles section-->
 @section Styles {
     <link rel="stylesheet" href="~/css/details.css" />
 }
 
 <div class="col-md-12">
     <div class="col-md-7">
-        <h1>@Model.Title</h1>
-        <p class="modified-date">Last updated on @ViewData["modified_date"]</p>
+        <!-- Setting the title for the blog -->
+        <h1>@Model.Post.Title</h1>
+
+        <!-- Last updated / modified date, which we set in the view model -->
+        <p class="modified-date">Last updated on @Model.ModifiedDate</p>
+
+        <!-- Raw content from the blog within the view model. -->
         <div class="content px-5">
-            @Html.Raw(Model.Content)
+            @Html.Raw(Model.Post.Content)
         </div>
     </div>
 
     <div class="col-md-5">
         <h2>Featured Articles</h2>
-        @foreach (var related in relatedPosts)
+        <!-- Looping through all related posts as well which we set in the view model. -->
+        @foreach (var related in Model.RelatedPosts)
         {
             <a href="#">@related.Title</a>
         }
@@ -35,6 +42,6 @@
 </div>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Post.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>

@@ -298,3 +298,18 @@
         width: 30px;
     }
 }
+
+/*
+    Additional css
+*/
+.introduction-container {
+    text-align: center;
+}
+
+.blog-container{
+    margin-top: 30px;
+}
+
+.blog-container > h2 {
+    text-align:center;
+}
